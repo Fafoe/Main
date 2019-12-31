@@ -31,7 +31,8 @@ try:
     for port in range (1,2): # pick the range (1,65535) 1 port at a time (will take forever v_v)
      s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #AF_INET = IPv4  SOCK_STREAM = port
      socket.setdefaulttimeout(1) # 1 sec to try to connect to a port, if not responding, go to the next one
-     result = s.connect_ex((RServerIP, port)) # returns an error indicator
+     result = s.connect_ex((RServerIP, port)) # returns an error indicaton
+     print("Checking port {}".format(port)) # display what port the script is scanning
     if result == 0:
         nl()
         print ("[+]Port{}:      Open".format(port)) # the port is open
