@@ -1,26 +1,26 @@
 #! python3
 
-import socket
-import sys
-from datetime import datetime as dt #import with alias
+import socket #scan module : node to node connection
+import sys  #system module
+from datetime import datetime as dt #import with alias 
 
-def nl():
+def nl(): #function to create new lines
     print('\n')
 
 #Ask for input
 RServer = input("Enter a remote host to scan: ")
-RServerIP = socket.gethostbyname(RServer)
+RServerIP = socket.gethostbyname(RServer) #translate hostname to IPv4
 
 #Print a banner with information
 print ("-" * 60)
 nl()
 print ("Please wait, scanning remote host", RServerIP)
 nl()
-print ("-" * 60)
 
 #Check what time the scan started
 t1 = dt.now()
-print ("The Scan started at " + str(t1))
+print ("Time started: " + str(t1))
+print ("-" * 60)
 nl()
 
 #Using the range function to speicify ports
@@ -28,12 +28,13 @@ nl()
 #Error handling for catching errors:
 
 try:
-    for port in range (1,2):
+    for port in range (1,2): # pick the range (1,65535) 1 port at a time (will take forever v_v)
      s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #AF_INET = IPv4  SOCK_STREAM = port
-     result = s.connect_ex((RServerIP, port))
+     socket.setdefaulttimeout(1) # 1 sec to try to connect to a port, if not responding, go to the next one
+     result = s.connect_ex((RServerIP, port)) # returns an error indicator
     if result == 0:
         nl()
-        print ("[+]Port{}:      Open".format(port))
+        print ("[+]Port{}:      Open".format(port)) # the port is open
         nl()
     else:
         print("-" * 60)
@@ -41,15 +42,16 @@ try:
         print("[-]No ports are opened on this address...")
         nl()
         print("-" * 60)
-    s.close()
+    s.close() # close the connection
     
+#Some exceptions:
     
 except KeyboardInterrupt:
-    print ("You pressed Ctrl + C")
+    print ("You pressed Ctrl + C. Exiting program")
     sys.exit()
     
 except socket.gaierror:
-    print ("Hostname could not be resolved. Exiting")
+    print ("Hostname could not be resolved. Exiting program")
     sys.exit()
     
 except socket.error:
